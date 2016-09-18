@@ -27,15 +27,21 @@ class Calculator(Frame):
               textvariable=display,justify='right', bd=30, bg="Powder blue").pack(side=TOP, expand=YES,
                                          fill=BOTH)
         # 添加清除按钮
-        clearF = frame(self, TOP)
-        button(clearF, LEFT, 'clear', lambda w=display: w.set(''))
+        #clearF = frame(self, TOP)
+        #button(clearF, LEFT, 'clear', lambda w=display: w.set(''))
+
+        for clearBut in(["CE"],["C"]):
+            keyF = frame(self, TOP)
+            for char in clearBut:
+                button(keyF, LEFT, char, lambda w=display, c=char: w.set(''))
 
         # 添加横条型框架以及里面的按钮
-        for key in ('123*', '456/', '789=', '0.+'):
+        for key in ('123*', '456/', '789-', '0.+'):
             keyF = frame(self, TOP)
             for char in key:
                 button(keyF, LEFT, char, lambda w=display, c=char: w.set(w.get() + c))
-                # 添加操作符按钮
+
+        # 添加操作符按钮
         opsF = frame(self, TOP)
         for char in '=':
             if char == '=':
