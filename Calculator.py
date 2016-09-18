@@ -1,52 +1,56 @@
 from tkinter import*
 
-def iCalc(source,side):
-    storeObj=Frame(source,borderwidth=4, bd=4,bg="Powder blue")
-    storeObj.pack(side=side,expand=YES, fill=BOTH)
-    return storeObj
+# 创建横条型框架
+def frame(root, side):
+    w = Frame(root,borderwidth=4, bd=4, bg="powder blue")
+    w.pack(side=side, expand=YES, fill=BOTH)
+    return w
 
-def button(source, side, text, commond=None):
-    storeObj=Button(source, text=text, commond=commond)
-    storeObj.pack(side=side, expand=YES, fill=BOTH)
-    return storeObj
+# 创建按钮
+def button(root, side, text, command=None):
+    w = Button(root, text=text, command=command)
+    w.pack(side=side, expand=YES, fill=BOTH)
+    return w
 
-class app(Frame):
+
+# 继承了Frame类，初始化程序界面的布局
+class Calculator(Frame):
     def __init__(self):
         Frame.__init__(self)
         self.option_add('*Font', 'arial 20 bold')
         self.pack(expand=YES, fill=BOTH)
-        self.master.title("Calculator")
+        self.master.title('Simple Calculater')
 
         display = StringVar()
-        Entry(self, relief=RIDGE, textvariable=display,
-            justify='right', bd=30, bg="Powder blue").pack(side=TOP, expand=YES, fill=BOTH)
+        # 添加输入框
+        Entry(self, relief=RIDGE,
+              textvariable=display,justify='right', bd=30, bg="Powder blue").pack(side=TOP, expand=YES,
+                                         fill=BOTH)
+        # 添加清除按钮
+        clearF = frame(self, TOP)
+        button(clearF, LEFT, 'clear', lambda w=display: w.set(''))
 
-        for clearBut in (["CE"], ["C"]):
-            erase = iCalc(self, TOP)
-            for ichar in clearBut:
-                button(erase,LEFT, ichar,
-                    lambda storeObj = display: storeObj.set(''))
-
-        for NumBut in('789/','456*', '123-','0.+'):
-            FuntionNum = iCalc(self, TOP)
-            for iEquals in NumBut:
-                button(FuntionNum, LEFT, iEquals, lambda storeObj = display, q=iEquals: storeObj.set(storeObj.get()+q))
-
-
-        EqualsButton = iCalc(self, TOP)
-        for iEquals in "=":
-            if iEquals == '=':
-                btniEquals  =button(EqualsButton, LEFT, iEquals)
-                btniEquals.bind('<ButtonRelease-1>', lambda e, s=self, storeObj=display: s.calc(storeObj), "+")
+        # 添加横条型框架以及里面的按钮
+        for key in ('123*', '456/', '789=', '0.+'):
+            keyF = frame(self, TOP)
+            for char in key:
+                button(keyF, LEFT, char, lambda w=display, c=char: w.set(w.get() + c))
+                # 添加操作符按钮
+        opsF = frame(self, TOP)
+        for char in '=':
+            if char == '=':
+                btn = button(opsF, LEFT, char)
+                btn.bind('<ButtonRelease - 1>', lambda e, s=self, w=display: s.calc(w), '+')
             else:
-                btniEquals = button(EqualsButton, LEFT, iEquals, lambda storeObj=display,s=' %s '%iEquals: storeObj.set(storeObj.get()+s ))
+                btn = button(opsF, LEFT, char, lambda w=display, s='%s' % char: w.set(w.get() + s))
 
-
+        # 调用eval函数计算表达式的值
     def calc(self, display):
         try:
             display.set(eval(display.get()))
         except:
             display.set("ERROR")
 
+# 程序的入口
 if __name__=='__main__':
-    app().mainloop()
+    Calculator().mainloop()
